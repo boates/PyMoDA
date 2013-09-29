@@ -6,6 +6,7 @@ Author: Brian Boates
 Implements Atom()
 """
 import numpy as np
+from utils import atomic_mass
 
 class Atom(object):
     """
@@ -77,6 +78,12 @@ class Atom(object):
         return: string
         """
         return self._name
+
+    def get_mass(self):
+        """
+        return: float | atomic mass in amu
+        """
+        return atomic_mass(self.get_name())
 
     def get_a(self):
         """
