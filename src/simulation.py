@@ -70,6 +70,14 @@ class Simulation(object):
         """
         self._configurations.append(configuration)
 
+    def insert_configurations(self, configurations):
+        """
+        parameters:
+            configurations: list[Configuration]
+        """
+        for configuration in configurations:
+            self.insert_configuration(configuration)
+
     def num_configurations(self):
         """
         return: int
