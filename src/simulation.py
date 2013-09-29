@@ -5,6 +5,8 @@ Author: Brian Boates
 
 Implements Simulation()
 """
+import sys
+sys.dont_write_bytecode = True
 import numpy as np
 import file_tools
 from atom import Atom
@@ -27,7 +29,7 @@ class Simulation(object):
         """
         return: string
         """
-        s = '<Simulation: >'
+        s = '<Simulation: timestep=%s>' % self.get_timestep()
         return s
 
     def __repr__(self):
@@ -35,6 +37,12 @@ class Simulation(object):
         return: string
         """
         return self.__str__()
+
+    def __iter__(self):
+        """
+        return: iterator
+        """
+        return iter(self.get_configurations())
 
     def get_configurations(self):
         """
@@ -88,3 +96,19 @@ class Simulation(object):
         return timestamp_idx * self.get_timestep()
 
 
+def main():
+
+    simulation = Simulation(timestep=0.75)
+    configuration = Configuration()
+    simulation.insert_configuration(configuration)
+    simulation.insert_configuration(configuration)
+    simulation.insert_configuration(configuration)
+    print configuration
+    print simulation
+    for c in simulation:
+        print c
+
+
+
+if __name__ == '__main__':
+    main()

@@ -5,13 +5,15 @@ Author: Brian Boates
 
 Implements Atom()
 """
+import sys
+sys.dont_write_bytecode = True
 import numpy as np
 from utils import atomic_mass
 
 class Atom(object):
     """
     """
-    def __init__(self, name=None, position):
+    def __init__(self, name, position):
         """
         parameters:
             name: string | atom type (i.e. H, He, Li, ...)

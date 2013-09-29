@@ -5,6 +5,8 @@ Author: Brian Boates
 
 Implementes Configuration()
 """
+import sys
+sys.dont_write_bytecode = True
 import numpy as np
 from collections import defaultdict
 from lattice import Lattice
@@ -34,6 +36,12 @@ class Configuration(object):
         return: string
         """
         return self.__str__()
+
+    def __iter__(self):
+        """
+        return: iterator
+        """
+        return iter(self.get_atoms())
 
     def get_lattice(self):
         """
@@ -149,3 +157,21 @@ class Configuration(object):
 
             return supercell
 
+
+def main():
+
+    atom = Atom('N', [0.1, 0.2, 0.3])
+    print atom
+    lattice = Lattice(1,0,0,0,1,0,0,0,1)
+    print lattice
+    configuration = Configuration()
+    configuration.insert_atom(atom)
+    configuration.insert_atom(atom)
+    configuration.insert_atom(atom)
+    print configuration
+    for a in configuration:
+        print a
+
+
+if __name__ == '__main__':
+    main()
