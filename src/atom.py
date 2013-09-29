@@ -10,18 +10,16 @@ import numpy as np
 class Atom(object):
     """
     """
-    def __init__(self, name=None, a=None, b=None, c=None):
+    def __init__(self, name=None, position):
         """
         parameters:
             name: string | atom type (i.e. H, He, Li, ...)
-            a: float | a position in reduced coordinates
-            b: float | b position in reduced coordinates
-            c: float | c position in reduced coordinates
+            position: np.array[float] | reduced coordinates
         """
         self._name = name
-        self._a = a
-        self._b = b
-        self._c = c
+        self._a = position[0]
+        self._b = position[1]
+        self._c = position[2]
 
     def __str__(self):
         """
@@ -65,10 +63,14 @@ class Atom(object):
     def set_c(self, c):
         self._c = c
 
-    def set_position(self, a, b, c):
-        self.set_a(a)
-        self.set_b(b)
-        self.set_c(c)
+    def set_position(self, position):
+        """
+        parameters:
+            position: np.array[float] | length 3
+        """
+        self.set_a(position[0])
+        self.set_b(position[1])
+        self.set_c(position[2])
 
     def get_name(self):
         """
@@ -143,5 +145,18 @@ class Atom(object):
         else:
             raise ValueError, 'unit must be reduced or cartesian'
 
+    def get_wrapped_position(self):
+        """
+        return: np.array[float] | length 3
+        """
+        wrapped_a = self.get_a() - np.floor(self.get_a())
+        wrapped_b = self.get_b() - np.floor(self.get_b())
+        wrapped_c = self.get_c() - np.floor(self.get_c())
+        return np.array([wrapped_a, wrapped_b, wrapped_c])
 
+    def wrap_position(self):
+        """
+        Destructive: changes positions
+        """
+        self.set_position(self.get_wrapped_position())
 
