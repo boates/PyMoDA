@@ -13,10 +13,11 @@ from configuration import Configuration
 class Simulation(object):
     """
     """
-    def __init__(self):
+    def __init__(self, timestep=None):
         """
         """
         self._configurations = []
+        self._timestep = timestep
 
     def __str__(self):
         """
@@ -31,18 +32,45 @@ class Simulation(object):
         """
         return self.__str__()
 
-    def get_configurations():
+    def get_configurations(self):
         """
         return: list[Configuration]
         """
         return self._configurations
 
-    def insert_configuration(configuration):
+    def get_timestep(self):
+        """
+        return: float | simulation timestep
+        """
+        return self._timestep
+
+    def set_timestep(self, timestep):
+        self._timestep = timestep
+
+    def insert_configuration(self, configuration):
         self._configurations.append(configuration)
 
-    def num_configurations():
+    def num_configurations(self):
         """
         return: int
         """
         return len(self.get_configurations())
+
+    def get_configuration(self, timestep_idx):
+        """
+        return: Configuration
+        parameters:
+            timestep_idx: int | configuration index
+        """
+        if 0 < timestep_idx < self.num_configurations():
+            return self.get_configurations()[timestep_idx]
+        else:
+            raise IndexError, 'timestep_idx out of simulation range'
+
+    def get_time(self, timestep_idx):
+        """
+        return: float | time of simulation at timestep_idx
+        """
+        return timestamp_idx * self.get_timestep()
+
 
