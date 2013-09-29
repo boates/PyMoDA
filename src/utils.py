@@ -5,6 +5,7 @@ Author: Brian Boates
 
 Utility functions for PyMoDA
 """
+import numpy as np
 
 def pbc_displacement(atom1, atom2, unit='reduced', lattice=None):
     """
