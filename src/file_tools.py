@@ -13,7 +13,7 @@ from simulation import Simulation
 
 def read_trj(trj_file):
     """
-    return: nothing
+    return: Simulation
     parameters:
         trj_file: string | name of trj file
     """
@@ -43,4 +43,6 @@ def read_trj(trj_file):
                 configuration.insert_atom(Atom(atom_name, atom_position))
 
             simulation.insert_configuration(configuration)
+
+    return simulation
 
