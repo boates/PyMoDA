@@ -6,6 +6,7 @@ Author: Brian Boates
 Implements Simulation()
 """
 import numpy as np
+import file_tools
 from atom import Atom
 from lattice import Lattice
 from configuration import Configuration
