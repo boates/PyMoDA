@@ -63,6 +63,20 @@ class Simulation(object):
         """
         self._timestep = timestep
 
+    def get_time(self, timestep_idx):
+        """
+        return: float | time of simulation at timestep_idx
+        parameters:
+            timestep_idx: int | configuration index
+        """
+        return timestep_idx * self.get_timestep()
+
+    def length(self):
+        """
+        return: float
+        """
+        return self.get_time(self.num_configurations()-1)
+
     def insert_configuration(self, configuration):
         """
         parameters:
@@ -94,20 +108,6 @@ class Simulation(object):
             return self.get_configurations()[timestep_idx]
         else:
             raise IndexError, 'timestep_idx out of simulation range'
-
-    def get_time(self, timestep_idx):
-        """
-        return: float | time of simulation at timestep_idx
-        parameters:
-            timestep_idx: int | configuration index
-        """
-        return timestep_idx * self.get_timestep()
-
-    def length(self):
-        """
-        return: float
-        """
-        return self.get_time(self.num_configurations()-1)
 
 
 def main():
