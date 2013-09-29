@@ -8,6 +8,7 @@ Implements Lattice()
 import sys
 sys.dont_write_bytecode = True
 import numpy as np
+import file_tools
 
 class Lattice(object):
     """
@@ -15,15 +16,15 @@ class Lattice(object):
     def __init__(self, ax=None, ay=None, az=None
                      , bx=None, by=None, bz=None
                      , cx=None, cy=None, cz=None):
-        self._ax = ax
-        self._ay = ay
-        self._az = az
-        self._bx = bx
-        self._by = by
-        self._bz = bz
-        self._cx = cx
-        self._cy = cy
-        self._cz = cz
+        self._ax = float(ax)
+        self._ay = float(ay)
+        self._az = float(az)
+        self._bx = float(bx)
+        self._by = float(by)
+        self._bz = float(bz)
+        self._cx = float(cx)
+        self._cy = float(cy)
+        self._cz = float(cz)
 
     def __str__(self):
         """
@@ -40,6 +41,15 @@ class Lattice(object):
         return: string
         """
         return self.__str__()
+
+    def trj_str(self):
+        """
+        return: string | for trj file
+        """
+        s  = '%s %s %s\n' % (self.get_ax(), self.get_ay(), self.get_az())
+        s += '%s %s %s\n' % (self.get_bx(), self.get_by(), self.get_bz())
+        s += '%s %s %s\n' % (self.get_cx(), self.get_cy(), self.get_cz())
+        return s
 
     def set_ax(self, ax):
         self._ax = ax
@@ -230,3 +240,8 @@ class Lattice(object):
         """
         return np.abs(np.dot(self.get_a(), np.cross(self.get_b(), self.get_c())))
 
+    def to_pkl(self, file_name='lattice.pkl'):
+        """
+        Save Lattice object as pickle file
+        """
+        file_tools.save_pkl(self, file_name)

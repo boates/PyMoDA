@@ -6,6 +6,7 @@ Author: Brian Boates
 Methods to assist with input/output file handling
 """
 import numpy as np
+import pickle
 from atom import Atom
 from lattice import Lattice
 from configuration import Configuration
@@ -45,4 +46,23 @@ def read_trj(trj_file):
             simulation.insert_configuration(configuration)
 
     return simulation
+
+def load_pkl(file_name):
+    """
+    return: object | loaded from pickle file
+    parameters:
+        file_name: string | name of pickle file
+    """
+    with open(file_name, 'r') as infile:
+        obj = pickle.load(infile)
+    return obj
+
+def save_pkl(obj, file_name):
+    """
+    parameters:
+        obj: object to save to pickle file
+        file_name: string | name for pickle file
+    """
+    with open(file_name, 'w') as outfile:
+        pickle.dump(obj, file_name)
 

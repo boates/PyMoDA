@@ -22,8 +22,9 @@ class Simulation(object):
             configurations: list[Configuration]
             timestep: float
         """
-        self._configurations = configurations
+        self._configurations = []
         self._timestep = timestep
+        self.insert_configurations(configurations)
 
     def __str__(self):
         """
@@ -43,6 +44,15 @@ class Simulation(object):
         return: iterator
         """
         return iter(self.get_configurations())
+
+    def trj_str(self):
+        """
+        return: string | for trj file
+        """
+        s = ''
+        for configuration in self:
+            s += configuration.trj_str()
+        return s
 
     def get_configurations(self):
         """
@@ -109,17 +119,30 @@ class Simulation(object):
         else:
             raise IndexError, 'timestep_idx out of simulation range'
 
+    def to_trj(self, file_name='simulation.trj'):
+        """
+        Write Simulation object to trj file
+        parameters:
+            file_name: string | name for output trj file
+        """
+        with open(file_name, 'w') as outfile:
+            outfile.write(self.trj_str().strip())
+
+    def to_pkl(self, file_name='simulation.pkl'):
+        """
+        Save Simulation object as pickle file
+        """
+        file_tools.save_pkl(self, file_name)
+
 
 def main():
 
-    simulation = Simulation(timestep=0.75)
-    configuration = Configuration()
-    simulation.insert_configurations([configuration for i in range(7)])
-    print configuration
-    print simulation
-    for c in simulation:
-        print c
-    print simulation.length()
+    atom = Atom('N', [0.1, 0.2, 0.3])
+    lattice = Lattice(1, 0, 0, 0, 1, 0, 0, 0, 1)
+    configuration = Configuration(atoms=[atom]*5, lattice=lattice)
+    simulation = Simulation([configuration]*7, timestep=0.75)
+
+    print simulation.trj_str()
 
 
 if __name__ == '__main__':

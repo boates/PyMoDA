@@ -8,6 +8,7 @@ Implements Atom()
 import sys
 sys.dont_write_bytecode = True
 import numpy as np
+import file_tools
 from utils import atomic_mass
 
 class Atom(object):
@@ -53,6 +54,13 @@ class Atom(object):
         return: bool
         """
         return not self.__eq__(atom)
+
+    def trj_str(self):
+        """
+        return: string | for trj file
+        """
+        values = (self.get_name(), self.get_a(), self.get_b(), self.get_c())
+        return '%s %s %s %s\n' % values
 
     def set_name(self, name):
         self._name = name
@@ -169,3 +177,8 @@ class Atom(object):
         """
         self.set_position(self.get_wrapped_position())
 
+    def to_pkl(self, file_name='atom.pkl'):
+        """
+        Save Atom object as pickle file
+        """
+        file_tools.save_pkl(self, file_name)

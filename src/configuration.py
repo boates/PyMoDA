@@ -9,6 +9,7 @@ import sys
 sys.dont_write_bytecode = True
 import numpy as np
 from collections import defaultdict
+import file_tools
 from atom import Atom
 from lattice import Lattice
 
@@ -21,9 +22,10 @@ class Configuration(object):
             atom: list[Atom]
             lattice: Lattice
         """
-        self._atoms = atoms
-        self._atom_counter = defaultdict(int)
+        self._atoms = []
         self._lattice = lattice
+        self._atom_counter = defaultdict(int)
+        self.insert_atoms(atoms)
 
     def __str__(self):
         """
@@ -43,6 +45,23 @@ class Configuration(object):
         return: iterator
         """
         return iter(self.get_atoms())
+
+    def trj_str(self):
+        """
+        return: string | for trj file
+        """
+        s = self.get_lattice().trj_str()
+
+        name_str, count_str = '', ''
+        for name, count in self.get_atom_counter().iteritems():
+            name_str += '%s ' % name
+            count_str += '%s ' % count
+        s += name_str.strip() + '\n' + count_str.strip() + '\n'
+
+        for atom in self:
+            s += atom.trj_str()
+
+        return s
 
     def get_lattice(self):
         """
@@ -74,6 +93,12 @@ class Configuration(object):
         else:
             return self.get_atom_counter()[name]
 
+    def get_atom_types(self):
+        """
+        return: set[string]
+        """
+        return set(self.get_atom_counter.keys())
+
     def get_ntypes(self):
         """
         return: int | number of different atom types
@@ -84,12 +109,12 @@ class Configuration(object):
         self._atoms.append(atom)
         self._atom_counter[atom.get_name()] += 1
 
-    def insert_atoms(self, atom_list):
+    def insert_atoms(self, atoms):
         """
         parameters:
-            atom_list: list[Atom]
+            atoms: list[Atom]
         """
-        for atom in atom_list:
+        for atom in atoms:
             self.insert_atom(atom)
 
     def wrap_coordinates(self):
@@ -158,21 +183,28 @@ class Configuration(object):
 
             return supercell
 
+    def to_trj(self, file_name='configuration.trj'):
+        """
+        Write Configuration object to trj file
+        parameters:
+            file_name: string | name for output trj file
+        """
+        with open(file_name, 'w') as outfile:
+            outfile.write(self.trj_str().strip())
+
+    def to_pkl(self, file_name='configuration.pkl'):
+        """
+        Save Configuration object as pickle file
+        """
+        file_tools.save_pkl(self, file_name)
+
 
 def main():
 
     atom = Atom('N', [0.1, 0.2, 0.3])
-    print atom
-    lattice = Lattice(1,0,0,0,1,0,0,0,1)
-    print lattice
-    configuration = Configuration()
-    configuration.insert_atom(atom)
-    configuration.insert_atom(atom)
-    configuration.insert_atom(atom)
-    print configuration
-    print configuration.get_atom_counter()
-    for a in configuration:
-        print a
+    lattice = Lattice(1, 0, 0, 0, 1, 0, 0, 0, 1)
+    configuration = Configuration([atom]*7, lattice=lattice)
+    print configuration.trj_str()
 
 
 if __name__ == '__main__':
