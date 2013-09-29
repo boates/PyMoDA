@@ -28,9 +28,9 @@ class Lattice(object):
         return: string
         """
         s  = '<Lattice: '
-        s += 'a=(%s, %s, %s), ' % (self._ax, self._ay, self._az)
-        s += 'b=(%s, %s, %s), ' % (self._bx, self._by, self._bz)
-        s += 'c=(%s, %s, %s)>'  % (self._cx, self._cy, self._cz)
+        s += 'a=(%s, %s, %s), ' % (self.get_ax(), self.get_ay(), self.get_az())
+        s += 'b=(%s, %s, %s), ' % (self.get_bx(), self.get_by(), self.get_bz())
+        s += 'c=(%s, %s, %s)>'  % (self.get_cx(), self.get_cy(), self.get_cz())
         return s
 
     def __repr__(self):
@@ -121,19 +121,19 @@ class Lattice(object):
         return self._cz
 
     def set_a(self, ax, ay, az):
-        self._ax = ax
-        self._ay = ay
-        self._az = az
+        self.set_ax(ax)
+        self.set_ay(ay)
+        self.set_az(az)
 
     def set_b(self, bx, by, bz):
-        self._bx = bx
-        self._by = by
-        self._bz = bz
+        self.set_bx(bx)
+        self.set_by(by)
+        self.set_bz(bz)
 
     def set_c(self, cx, cy, cz):
-        self._cx = cx
-        self._cy = cy
-        self._cz = cz
+        self.set_cx(cx)
+        self.set_cy(cy)
+        self.set_cz(cz)
 
     def get_a(self):
         """
@@ -180,11 +180,11 @@ class Lattice(object):
         numerator = np.dot(self.get_b(), self.get_c())
         denominator = self.mag_b() * self.mag_c()
         theta = np.arccos(numerator / denominator)
-        if unit == 'radians':
-            return theta
-        elif unit == 'degrees':
+        if unit == 'degrees':
             pi = np.arccos(-1)
             return theta * 180./pi
+        elif unit == 'radians':
+            return theta
         else:
             raise ValueError, 'unit must be degrees or radians'
 
@@ -197,11 +197,11 @@ class Lattice(object):
         numerator = np.dot(self.get_a(), self.get_c())
         denominator = self.mag_a() * self.mag_c()
         theta = np.arccos(numerator / denominator)
-        if unit == 'radians':
-            return theta
-        elif unit == 'degrees':
+        if unit == 'degrees':
             pi = np.arccos(-1)
             return theta * 180./pi
+        elif unit == 'radians':
+            return theta
         else:
             raise ValueError, 'unit must be degrees or radians'
 
@@ -214,11 +214,11 @@ class Lattice(object):
         numerator = np.dot(self.get_a(), self.get_b())
         denominator = self.mag_a() * self.mag_b()
         theta = np.arccos(numerator / denominator)
-        if unit == 'radians':
-            return theta
-        elif unit == 'degrees':
+        if unit == 'degrees':
             pi = np.arccos(-1)
             return theta * 180./pi
+        elif unit == 'radians':
+            return theta
         else:
             raise ValueError, 'unit must be degrees or radians'
 
@@ -226,6 +226,5 @@ class Lattice(object):
         """
         return: float | scalar triple product
         """
-        vol = np.dot(self.get_a(), np.cross(self.get_b(), self.get_c()))
-        return abs(vol)
+        return np.abs(np.dot(self.get_a(), np.cross(self.get_b(), self.get_c())))
 

@@ -38,6 +38,9 @@ class Atom(object):
         return self.__str__()
 
     def __eq__(self, atom):
+        """
+        return: bool
+        """
         same_name = self._name == atom.name
         same_a = self.get_a() == atom.get_a()
         same_b = self.get_b() == atom.get_b()
@@ -45,6 +48,9 @@ class Atom(object):
         return same_name and same_a and same_b and same_c
 
     def __ne__(self, atom):
+        """
+        return: bool
+        """
         return not self.__eq__(atom)
 
     def set_name(self, name):
