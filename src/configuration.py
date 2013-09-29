@@ -9,6 +9,7 @@ import sys
 sys.dont_write_bytecode = True
 import numpy as np
 from collections import defaultdict
+from atom import Atom
 from lattice import Lattice
 
 class Configuration(object):
@@ -80,8 +81,8 @@ class Configuration(object):
         return len(self.get_atom_counter().keys())
 
     def insert_atom(self, atom):
-        self._atom.append(atom)
-        self._atom_counter[atom.name] += 1
+        self._atoms.append(atom)
+        self._atom_counter[atom.get_name()] += 1
 
     def insert_atoms(self, atom_list):
         """
@@ -169,6 +170,7 @@ def main():
     configuration.insert_atom(atom)
     configuration.insert_atom(atom)
     print configuration
+    print configuration.get_atom_counter()
     for a in configuration:
         print a
 
