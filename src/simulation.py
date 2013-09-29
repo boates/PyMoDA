@@ -16,13 +16,13 @@ class Simulation(object):
     def __init__(self):
         """
         """
-        pass
+        self._configurations = []
 
     def __str__(self):
         """
         return: string
         """
-        s = '<Simulation>'
+        s = '<Simulation: >'
         return s
 
     def __repr__(self):
@@ -31,7 +31,18 @@ class Simulation(object):
         """
         return self.__str__()
 
+    def get_configurations():
+        """
+        return: list[Configuration]
+        """
+        return self._configurations
+
     def insert_configuration(configuration):
+        self._configurations.append(configuration)
+
+    def num_configurations():
         """
+        return: int
         """
-        pass
+        return len(self.get_configurations())
+
