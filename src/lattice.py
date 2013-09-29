@@ -120,20 +120,20 @@ class Lattice(object):
         """
         return self._cz
 
-    def set_a(self, ax, ay, az):
-        self.set_ax(ax)
-        self.set_ay(ay)
-        self.set_az(az)
+    def set_a(self, a_vector):
+        self.set_ax(a_vector[0])
+        self.set_ay(a_vector[1])
+        self.set_az(a_vector[2])
 
-    def set_b(self, bx, by, bz):
-        self.set_bx(bx)
-        self.set_by(by)
-        self.set_bz(bz)
+    def set_b(self, b_vector):
+        self.set_bx(b_vector[0])
+        self.set_by(b_vector[1])
+        self.set_bz(b_vector[2])
 
-    def set_c(self, cx, cy, cz):
-        self.set_cx(cx)
-        self.set_cy(cy)
-        self.set_cz(cz)
+    def set_c(self, c_vector):
+        self.set_cx(c_vector[0])
+        self.set_cy(c_vector[1])
+        self.set_cz(c_vector[2])
 
     def get_a(self):
         """
