@@ -101,21 +101,25 @@ class Simulation(object):
         parameters:
             timestep_idx: int | configuration index
         """
-        return timestamp_idx * self.get_timestep()
+        return timestep_idx * self.get_timestep()
+
+    def length(self):
+        """
+        return: float
+        """
+        return self.get_time(self.num_configurations()-1)
 
 
 def main():
 
     simulation = Simulation(timestep=0.75)
     configuration = Configuration()
-    simulation.insert_configuration(configuration)
-    simulation.insert_configuration(configuration)
-    simulation.insert_configuration(configuration)
+    simulation.insert_configurations([configuration for i in range(7)])
     print configuration
     print simulation
     for c in simulation:
         print c
-
+    print simulation.length()
 
 
 if __name__ == '__main__':
