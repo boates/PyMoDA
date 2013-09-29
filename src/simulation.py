@@ -13,10 +13,13 @@ from configuration import Configuration
 class Simulation(object):
     """
     """
-    def __init__(self, timestep=None):
+    def __init__(self, configurations=[], timestep=None):
         """
+        parameters:
+            configurations: list[Configuration]
+            timestep: float
         """
-        self._configurations = []
+        self._configurations = configurations
         self._timestep = timestep
 
     def __str__(self):
@@ -45,9 +48,17 @@ class Simulation(object):
         return self._timestep
 
     def set_timestep(self, timestep):
+        """
+        parameters:
+            timestep: float
+        """
         self._timestep = timestep
 
     def insert_configuration(self, configuration):
+        """
+        parameters:
+            configuration: Configuration
+        """
         self._configurations.append(configuration)
 
     def num_configurations(self):
@@ -70,6 +81,8 @@ class Simulation(object):
     def get_time(self, timestep_idx):
         """
         return: float | time of simulation at timestep_idx
+        parameters:
+            timestep_idx: int | configuration index
         """
         return timestamp_idx * self.get_timestep()
 
