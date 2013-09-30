@@ -22,9 +22,8 @@ class Configuration(object):
             atom: list[Atom]
             lattice: Lattice
         """
-        self._atoms = []
+        self._atoms = defaultdict(list)
         self._lattice = lattice
-        self._atom_counter = defaultdict(int)
         self.insert_atoms(atoms)
 
     def __str__(self):
@@ -53,9 +52,9 @@ class Configuration(object):
         s = self.get_lattice().trj_str()
 
         name_str, count_str = '', ''
-        for name, count in self.get_atom_counter().iteritems():
+        for name, atoms in self._atoms.iteritems():
             name_str += '%s ' % name
-            count_str += '%s ' % count
+            count_str += '%s ' % len(atoms)
         s += name_str.strip() + '\n' + count_str.strip() + '\n'
 
         for atom in self:
@@ -72,42 +71,37 @@ class Configuration(object):
     def set_lattice(self, lattice):
         self._lattice = lattice
 
-    def get_atoms(self):
+    def get_atoms(self, name=None):
         """
         return: list[Atom]
+        parameters:
+            name: string | type of atoms to get
         """
-        return self._atoms
-
-    def get_atom_counter(self):
-        """
-        return: dict[string:int]
-        """
-        return self._atom_counter
+        if not name:
+            return list(np.concatenate(self._atoms.values()))
+        else:
+            return self._atoms[name]
 
     def get_natom(self, name=None):
         """
         return: int | number of atoms currently in configuration
         """
-        if not name:
-            return len(self.get_atoms())
-        else:
-            return self.get_atom_counter()[name]
+        return len(self.get_atoms(name))
 
     def get_atom_types(self):
         """
-        return: set[string]
+        return: list[string]
         """
-        return set(self.get_atom_counter.keys())
+        return self._atoms.keys()
 
     def get_ntypes(self):
         """
         return: int | number of different atom types
         """
-        return len(self.get_atom_counter().keys())
+        return len(self.get_atom_types())
 
     def insert_atom(self, atom):
-        self._atoms.append(atom)
-        self._atom_counter[atom.get_name()] += 1
+        self._atoms[atom.get_name()].append(atom)
 
     def insert_atoms(self, atoms):
         """
