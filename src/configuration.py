@@ -72,6 +72,12 @@ class Configuration(object):
     def set_lattice(self, lattice):
         self._lattice = lattice
 
+    def get_atoms_dict(self):
+        """
+        return: dict[]
+        """
+        return self._atoms
+
     def get_atoms(self, name=None):
         """
         return: list[Atom]
@@ -79,9 +85,9 @@ class Configuration(object):
             name: string | type of atoms to get
         """
         if not name:
-            return list(np.concatenate(self._atoms.values()))
+            return list(np.concatenate(self.get_atoms_dict().values()))
         else:
-            return self._atoms[name]
+            return self.get_atoms_dict()[name]
 
     def get_natom(self, name=None):
         """
@@ -203,9 +209,14 @@ class Configuration(object):
 
     def get_distances_list(self, name1=None, name2=None, unit='cartesian'):
         """
-        If name1 or name2 are None, a list of all distances between
-        all atoms types is returned, otherwise only distances between
-        atoms with type name1 and name2 are returned.
+        There are a few cases depending on name1 and name2:
+        (1) name1 == name2 == None
+            - All distances between all atoms are returned
+        (2) name1 == None or name2 == None
+            - All distances between the non-None atom name and all other
+              atoms are returned
+        (3) name1 != None and name2 != None
+            - All name1-name2 atom distances are returned
 
         return: list[float] | distances between atoms
         parameters:
@@ -215,14 +226,27 @@ class Configuration(object):
         """
         distances = []
         if name1 == name2:
-            if not name1 or not name2:
-                atoms = self.get_atoms()
-            else:
-                atoms = self.get_atoms(name=name1)
+            atoms = self.get_atoms(name=name1)
             for i in xrange(len(atoms)):
                 for j in xrange(i+1, len(atoms)):
                     distances.append(pbc_distance(atoms[i], atoms[j], unit=unit
                                                  ,lattice=self.get_lattice()))
+
+        elif not name1 or not name2:
+            name = name1 if name1 else name2
+            atoms = self.get_atoms(name=name)
+            atoms_dict = self.get_atoms_dict()
+            for atom_name in atoms_dict.keys():
+                if atom_name == name:
+                    for i in xrange(len(atoms)):
+                        for j in xrange(i+1, len(atoms)):
+                            distances.append(pbc_distance(atoms[i], atoms[j], unit=unit
+                                                         ,lattice=self.get_lattice()))
+                else:
+                    for atom1 in atoms:
+                        for atom2 in atoms_dict[atom_name]:
+                            distances.append(pbc_distance(atom1, atom2, unit=unit
+                                                         ,lattice=self.get_lattice()))
 
         else:
             atoms1 = self.get_atoms(name=name1)
@@ -263,6 +287,10 @@ def main():
     print configuration.trj_str()
 
     distances = configuration.get_distances_dict()
+    print distances
+    print
+
+    distances = configuration.get_distances_list(name1='C', name2='O')
     print distances
 
 
