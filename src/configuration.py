@@ -197,10 +197,9 @@ class Configuration(object):
                 name_j = atoms[j].get_name()
                 key = min(name_i, name_j) + '-' + max(name_i, name_j)
                 distances[key].append(pbc_distance(atoms[i], atoms[j], unit=unit
-                                                   lattice=self.get_lattice())
+                                                  ,lattice=self.get_lattice()))
 
-        return distances
-
+        return dict(distances)
 
     def get_distances_list(self, name1=None, name2=None, unit='cartesian'):
         """
@@ -222,22 +221,18 @@ class Configuration(object):
                 atoms = self.get_atoms(name=name1)
             for i in xrange(len(atoms)):
                 for j in xrange(i+1, len(atoms)):
-                    distances.append(pbc_distance(atoms[i], atoms[j], unit=unit,
-                                                  lattice=self.get_lattice())
+                    distances.append(pbc_distance(atoms[i], atoms[j], unit=unit
+                                                 ,lattice=self.get_lattice()))
 
         else:
             atoms1 = self.get_atoms(name=name1)
             atoms2 = self.get_atoms(name=name2)
             for atom1 in atoms1:
                 for atom2 in atoms2:
-                    distances.append(pbc_distance(atom1, atom2, unit=unit,
-                                                  lattice=self.get_lattice())
+                    distances.append(pbc_distance(atom1, atom2, unit=unit
+                                                 ,lattice=self.get_lattice()))
 
         return distances
-
-
-
-
 
     def to_trj(self, file_name='configuration.trj'):
         """
@@ -257,10 +252,18 @@ class Configuration(object):
 
 def main():
 
-    atom = Atom('N', [0.1, 0.2, 0.3])
-    lattice = Lattice(1, 0, 0, 0, 1, 0, 0, 0, 1)
-    configuration = Configuration([atom]*7, lattice=lattice)
+    atom1 = Atom('N', [0.10, 0.20, 0.30])
+    atom2 = Atom('C', [0.50, 0.23, 0.73])
+    atom3 = Atom('O', [0.70, 0.30, 0.60])
+    atom4 = Atom('O', [0.10, 0.50, 0.90])
+    atom5 = Atom('O', [0.10, 0.50, 0.50])
+    atoms = [atom1, atom2, atom3, atom4, atom5]
+    lattice = Lattice(10, 0, 0, 0, 10, 0, 0, 0, 10)
+    configuration = Configuration(atoms, lattice=lattice)
     print configuration.trj_str()
+
+    distances = configuration.get_distances_dict()
+    print distances
 
 
 if __name__ == '__main__':
