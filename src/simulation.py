@@ -30,7 +30,8 @@ class Simulation(object):
         """
         return: string
         """
-        s = '<Simulation: timestep=%s>' % self.get_timestep()
+        s  = '<Simulation: timestep=%s, ' % self.get_timestep()
+        s += 'num_configurations=%s>' % self.num_configurations()
         return s
 
     def __repr__(self):
@@ -114,7 +115,7 @@ class Simulation(object):
         parameters:
             timestep_idx: int | configuration index
         """
-        if 0 < timestep_idx < self.num_configurations():
+        if 0 <= timestep_idx < self.num_configurations():
             return self.get_configurations()[timestep_idx]
         else:
             raise IndexError, 'timestep_idx out of simulation range'
@@ -143,6 +144,7 @@ def main():
     simulation = Simulation([configuration]*7, timestep=0.75)
 
     print simulation.trj_str()
+    print simulation
 
 
 if __name__ == '__main__':
