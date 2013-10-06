@@ -120,6 +120,17 @@ class Simulation(object):
         else:
             raise IndexError, 'timestep_idx out of simulation range'
 
+    def unwrap_coordinates(self):
+        """
+        """
+        pass
+
+    def set_velocities(self):
+        """
+        Warning: only valid if simulation is unwrapped
+        """
+        pass
+
     def to_trj(self, file_name='simulation.trj'):
         """
         Write Simulation object to trj file
