@@ -96,6 +96,11 @@ def pbc_displacement(atom1, atom2, unit='reduced', lattice=None):
 def pbc_distance(atom1, atom2, unit='reduced', lattice=None):
     """
     return: float | distance in minimum image convention
+    parameters:
+        atom1: Atom
+        atom2: Atom
+        unit: string | 'reduced' (default) or 'cartesian'
+        lattice: Lattice
     """
     displacement = pbc_displacement(atom1, atom2, unit, lattice)
     return np.sqrt(np.dot(displacement, displacement))
