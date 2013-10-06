@@ -10,6 +10,7 @@ sys.dont_write_bytecode = True
 import numpy as np
 from collections import defaultdict
 import file_tools
+from utils import pbc_distance
 from atom import Atom
 from lattice import Lattice
 
@@ -176,6 +177,67 @@ class Configuration(object):
                         supercell.insert_atom(atom.name, np.array(position)/super_idx)
 
             return supercell
+
+    def get_distances_dict(self, unit='cartesian'):
+        """
+        Computes distances between all atoms and stores them
+        in a dictionary where the key is a string representing
+        the atom pair type (e.g. 'C-O'), and the value is a
+        list of distances for that atom pair type.
+
+        return: dict[string:list[float]]
+        parameters:
+            unit: string | 'reduced' or 'cartesian' (default)
+        """
+        distances = defaultdict(list)
+        atoms = self.get_atoms()
+        for i in xrange(len(atoms)):
+            name_i = atoms[i].get_name()
+            for j in xrange(i+1, len(atoms)):
+                name_j = atoms[j].get_name()
+                key = min(name_i, name_j) + '-' + max(name_i, name_j)
+                distances[key].append(pbc_distance(atoms[i], atoms[j], unit=unit
+                                                   lattice=self.get_lattice())
+
+        return distances
+
+
+    def get_distances_list(self, name1=None, name2=None, unit='cartesian'):
+        """
+        If name1 or name2 are None, a list of all distances between
+        all atoms types is returned, otherwise only distances between
+        atoms with type name1 and name2 are returned.
+
+        return: list[float] | distances between atoms
+        parameters:
+            name1: string | atom type
+            name2: string | atom type
+            unit: string | either 'reduced' or 'cartesian' (default)
+        """
+        distances = []
+        if name1 == name2:
+            if not name1 or not name2:
+                atoms = self.get_atoms()
+            else:
+                atoms = self.get_atoms(name=name1)
+            for i in xrange(len(atoms)):
+                for j in xrange(i+1, len(atoms)):
+                    distances.append(pbc_distance(atoms[i], atoms[j], unit=unit,
+                                                  lattice=self.get_lattice())
+
+        else:
+            atoms1 = self.get_atoms(name=name1)
+            atoms2 = self.get_atoms(name=name2)
+            for atom1 in atoms1:
+                for atom2 in atoms2:
+                    distances.append(pbc_distance(atom1, atom2, unit=unit,
+                                                  lattice=self.get_lattice())
+
+        return distances
+
+
+
+
 
     def to_trj(self, file_name='configuration.trj'):
         """
