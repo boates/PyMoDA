@@ -10,6 +10,7 @@ sys.dont_write_bytecode = True
 import numpy as np
 import file_tools
 from utils import atomic_mass
+from utils import pbc_displacement
 
 class Atom(object):
     """
@@ -24,6 +25,10 @@ class Atom(object):
         self._a = position[0]
         self._b = position[1]
         self._c = position[2]
+        self._x = None
+        self._y = None
+        self._z = None
+        self._velocity = None
 
     def __str__(self):
         """
@@ -113,7 +118,7 @@ class Atom(object):
         """
         return self._c
 
-    def get_x(self, lattice):
+    def _compute_x(self, lattice):
         """
         return: float | cartesian x coordinate
         parameters:
@@ -124,7 +129,7 @@ class Atom(object):
         x += self.get_c() * lattice.get_cx()
         return x
 
-    def get_y(self, lattice):
+    def _compute_y(self, lattice):
         """
         return: float | cartesian y coordinate
         parameters:
@@ -135,7 +140,7 @@ class Atom(object):
         y += self.get_c() * lattice.get_cy()
         return y
 
-    def get_z(self, lattice):
+    def _compute_z(self, lattice):
         """
         return: float | cartesian z coordinate
         parameters:
@@ -145,6 +150,36 @@ class Atom(object):
         z += self.get_b() * lattice.get_bz()
         z += self.get_c() * lattice.get_cz()
         return z
+
+    def get_x(self, lattice):
+        """
+        return: float | cartesian x coordinate
+        parameters:
+            lattice: Lattice
+        """
+        if not self._x:
+            self._x = self._compute_x(lattice)
+        return self._x
+
+    def get_y(self, lattice):
+        """
+        return: float | cartesian y coordinate
+        parameters:
+            lattice: Lattice
+        """
+        if not self._y:
+            self._y = self._compute_y(lattice)
+        return self._y
+
+    def get_z(self, lattice):
+        """
+        return: float | cartesian z coordinate
+        parameters:
+            lattice: Lattice
+        """
+        if not self._z:
+            self._z = self._compute_z(lattice)
+        return self._z
 
     def get_position(self, unit='reduced', lattice=None):
         """
@@ -176,6 +211,46 @@ class Atom(object):
         Destructive: changes positions
         """
         self.set_position(self.get_wrapped_position())
+
+    def _compute_velocity(self, prev_atom, dt, lattice, prev_lattice=None):
+        """
+        Warnings:
+          - assumes atom positions are unwrapped
+
+        return: np.array[float] | x, y, z velocity components
+        parameters:
+            prev_position: Atom | atom when at previous position
+            dt: float | time since previous position
+            lattice: Lattice | lattice for atom at current position
+            prev_lattice: Lattice | lattice for atom at previous position
+        """
+        # if not given, assume previous lattice is same as current
+        if not prev_lattice:
+            prev_lattice = lattice
+
+        dx = self.get_x(cur_lattice) - prev_atom.get_x(prev_lattice)
+        dy = self.get_y(cur_lattice) - prev_atom.get_y(prev_lattice)
+        dz = self.get_z(cur_lattice) - prev_atom.get_z(prev_lattice)
+        vx = dx / dt if dt != 0 else np.inf
+        vy = dy / dt if dt != 0 else np.inf
+        vz = dz / dt if dt != 0 else np.inf
+        return np.array([vx, vy, vz])
+
+    def get_velocity(self, prev_atom, dt, lattice, prev_lattice=None):
+        """
+        Warnings:
+          - assumes atom positions are unwrapped
+
+        return: np.array[float] | x, y, z velocity components
+        parameters:
+            prev_position: Atom | atom when at previous position
+            dt: float | time since previous position
+            lattice: Lattice | lattice for atom at current position
+            prev_lattice: Lattice | lattice for atom at previous position
+        """
+        if not self._velocity:
+            self._velocity = self._compute_velocity(prev_atom, df, lattice, prev_lattice)
+        return self._velocity
 
     def to_pkl(self, file_name='atom.pkl'):
         """
