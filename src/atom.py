@@ -43,7 +43,7 @@ class Atom(object):
         """
         return: bool
         """
-        same_name = self._name == atom.name
+        same_name = self.get_name() == atom.get_name()
         same_a = self.get_a() == atom.get_a()
         same_b = self.get_b() == atom.get_b()
         same_c = self.get_c() == atom.get_c()
